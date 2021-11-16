@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  omeroweb:
+    build: .
+    image: custom-omero-web:prod
+    volumes:
+      - ./config/02-additional-config.omero:/opt/omero/web/config/02-additional-config.omero:ro
+    ports:
+      - "4080:4080"
