@@ -31,6 +31,8 @@ This is the way it was working before / for Chris:
 
 We need a custom omero web docker image to make the iframe integration work, because we need to set the `SameSite` attribute on the cookies used by omero web. Maybe this step isn't necessary anymore when https://github.com/ome/omero-web/issues/120 is fixed.
 
+We also need the custom omero web docker image because we build and copy the cLovid omero iviewer fork during the image creation.
+
 #### Dockerfiles
 
 We have two Dockerfiles
