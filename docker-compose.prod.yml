@@ -1,7 +1,12 @@
 version: "3"
 
 services:
+  database:
+    restart: unless-stopped
+  omeroserver:
+    restart: unless-stopped
   omeroweb:
+    restart: unless-stopped
     build: .
     image: custom-omero-web:prod
     volumes:
