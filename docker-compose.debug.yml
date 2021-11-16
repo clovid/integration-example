@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  omeroweb:
+    build:
+      context: .
+      dockerfile: Dockerfile.debug
+    image: custom-omero-web:debug
+    ports:
+      - "8443:443"

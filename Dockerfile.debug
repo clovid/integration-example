@@ -1,0 +1,17 @@
+FROM openmicroscopy/omero-web-standalone:5
+USER root
+RUN useradd -m chris
+RUN echo 'chris:chris' | chpasswd
+RUN echo 'omero-web:omero-web' | chpasswd
+RUN yum install sudo nginx -y
+RUN usermod -aG wheel chris
+RUN usermod -aG wheel omero-web
+RUN /opt/omero/web/venv3/bin/pip install 'django-cookies-samesite'
+COPY config/omeroweb.debug.conf /etc/nginx/conf.d/omeroweb.conf
+COPY keys/self.crt /opt/self.crt
+COPY keys/self.key /opt/self.key
+COPY config/02-additional-config.omero /opt/omero/web/config/02-additional-config.omero
+COPY config/97-run-nginx.sh /startup/97-run-nginx.sh
+RUN chmod 755 /startup/97-run-nginx.sh
+RUN echo "omero-web ALL=NOPASSWD: /sbin/nginx" >> /etc/sudoers
+USER omero-web
