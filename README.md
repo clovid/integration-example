@@ -29,6 +29,11 @@ This is the way it was working before / for Chris:
 #### Misc
 - Rebuild image with `docker-compose -f docker-compose.yml -f docker-compose.debug.yml build omeroweb`
 
+### Development of iViewer
+
+To use a local iViewer instance (e.g. during development on our iViewer fork) we need to run the [cLovid iViewer](https://github.com/clovid/omero-iviewer): `npm run dev`. Make sure to configure an existing start image id (see README of the iViewer fork).
+Use the following URL in the iframe to use the local iViewer: `http:localhost:8080`.
+
 ## Production
 
 For production we use the following command: `docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d`
