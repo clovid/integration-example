@@ -24,22 +24,23 @@
   let iViewerWindow;
   // TODO: replace * with specific target
   const targetOrigin = '*';
-  const messageContext = 'clovid_integration';
+  const messageContext = 'clovid_integration'; // shared "secret"
   window.addEventListener('message', event => {
     if (!event.data || !event.data.context || event.data.context !== messageContext) {
       return;
     }
     const omeroMessage = event.data
-    console.log('handle omeroMessage', omeroMessage);
+    // console.log('handle omeroMessage', omeroMessage);
     if (omeroMessage.type === 'event') {
       switch (omeroMessage.name) {
-        case 'initialized':
+        case 'handshake':
           document.getElementById('status_connection').innerText = 'true';
           iViewerWindow = event.source;
           sendEvent('initialized');
           break;
 
         default:
+          console.log('iViewer event', {name: omeroMessage.name, params: omeroMessage.params})
           break;
       }
     }
