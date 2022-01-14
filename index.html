@@ -17,7 +17,9 @@
     <dt>Visible annotations</dt>
     <dd id="status_annotations_count">0</dd>
   </dl>
-  <button id="action_hide_all_annotations">Hide all annotations</button>
+  <button class="action-button" data-action="hide_all_annotations">Hide all annotations</button>
+  <button class="action-button" data-action="show_all_annotations">Show all annotations</button>
+  <button class="action-button" data-action="hide_header_actions">Hide header actions</button>
 </body>
 
 <script>
@@ -45,6 +47,8 @@
       }
     }
   })
+
+  document.querySelectorAll('.action-button').forEach(btn => btn.onclick = () => sendMessage('action', btn.dataset.action))
 
   function sendEvent(name) {
     sendMessage('event', name);
