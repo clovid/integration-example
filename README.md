@@ -52,3 +52,11 @@ We have two Dockerfiles
 
 - `Dockerfile`: This is used for the main project
 - `Dockerfile.debug`: This builds an image that we can use for debugging purposes.
+
+### Import via CLI
+
+docker-compose exec omeroserver /bin/bash
+alias omero='/opt/omero/server/OMERO.server/bin/omero'
+omero -s localhost -u root login
+omero obj new Dataset name=image_1
+omero import -d Dataset:[id] [image]
