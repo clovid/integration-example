@@ -3,8 +3,13 @@ version: "3"
 services:
   database:
     restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: $OMERO_DB_PASSWORD
   omeroserver:
     restart: unless-stopped
+    environment:
+      CONFIG_omero_db_pass: $OMERO_DB_PASSWORD
+      ROOTPASS: $OMERO_ROOT_PASSWORD
   omeroweb:
     restart: unless-stopped
     build: .
