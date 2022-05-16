@@ -7,6 +7,13 @@
 </head>
 <body>
   Here you see our updated OMERO iViewer:
+  <button class="action-button" data-action="hide_all_annotations">Hide all annotations</button>
+  <button class="action-button" data-action="show_all_annotations">Show all annotations</button>
+  <button class="action-button" data-action="hide_header_actions">Hide header actions</button>
+  <button class="action-button" data-action="hide_navbar">Hide navbar</button>
+  <button class="action-button" data-action="show_navbar">Show navbar</button>
+  <button class="action-button event-fix" data-action="newPoint">Create ROI</button>
+  <button class="action-button event-fix" data-action="savePoint">Save ROI</button>
   <iframe src="http://localhost:8080" width="1600" height="800" frameborder="0"></iframe>
   <h2>Viewer status</h2>
   <dl>
@@ -17,13 +24,11 @@
     <dt>Visible annotations</dt>
     <dd id="status_annotations_count">0</dd>
   </dl>
-  <button class="action-button" data-action="hide_all_annotations">Hide all annotations</button>
-  <button class="action-button" data-action="show_all_annotations">Show all annotations</button>
-  <button class="action-button" data-action="hide_header_actions">Hide header actions</button>
 </body>
 
 <script>
   let iViewerWindow;
+  let iViewerId;
   // TODO: replace * with specific target
   const targetOrigin = '*';
   const messageContext = 'clovid_integration'; // shared "secret"
@@ -38,7 +43,9 @@
         case 'handshake':
           document.getElementById('status_connection').innerText = 'true';
           iViewerWindow = event.source;
+          iViewerId = omeroMessage.params.iviewerid;
           sendEvent('initialized');
+          sendEvent('prepare');
           break;
 
         default:
@@ -48,7 +55,11 @@
     }
   })
 
-  document.querySelectorAll('.action-button').forEach(btn => btn.onclick = () => sendMessage('action', btn.dataset.action))
+  document.querySelectorAll('.action-button').forEach(btn => btn.onclick = () => {
+    // todo fix in viewer to use action instead of event
+    const type = btn.classList.contains('event-fix') ? 'event' : 'action';
+    sendMessage(type, btn.dataset.action);
+  })
 
   function sendEvent(name) {
     sendMessage('event', name);
@@ -61,6 +72,7 @@
     iViewerWindow.postMessage(
       {
         context: messageContext,
+        target: iViewerId,
         type,
         name,
       },
