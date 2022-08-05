@@ -3,28 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Clovid integration example</title>
 </head>
 <body>
-  Here you see our updated OMERO iViewer:
-  <button class="action-button" data-action="hide_all_annotations">Hide all annotations</button>
-  <button class="action-button" data-action="show_all_annotations">Show all annotations</button>
-  <button class="action-button" data-action="hide_header_actions">Hide header actions</button>
-  <button class="action-button" data-action="hide_navbar">Hide navbar</button>
-  <button class="action-button" data-action="show_navbar">Show navbar</button>
-  <button class="action-button event-fix" data-action="newPoint">Create ROI</button>
-  <button class="action-button event-fix" data-action="savePoint">Save ROI</button>
-  <iframe src="http://localhost:8080" width="1600" height="800" frameborder="0"></iframe>
-  <h2>Viewer status</h2>
-  <dl>
-    <dt>Connection</dt>
-    <dd id="status_connection">false</dd>
-    <dt>Mode</dt>
-    <dd id="status_mode">view</dd>
-    <dt>Visible annotations</dt>
-    <dd id="status_annotations_count">0</dd>
-  </dl>
+  <div class="grid">
+    <div class="grid-2">
+      <h2>General actions</h2>
+      <div class="grid column">
+        <button class="action-button" data-action="hide_all_annotations">Hide all annotations</button>
+        <button class="action-button" data-action="show_all_annotations">Show all annotations</button>
+        <button class="action-button" data-action="hide_header_actions">Hide header actions</button>
+        <button class="action-button" data-action="hide_navbar">Hide navbar</button>
+        <button class="action-button" data-action="show_navbar">Show navbar</button>
+        <button class="action-button event-fix" data-action="newPoint">Create ROI</button>
+        <button class="action-button event-fix" data-action="savePoint">Save ROI</button>
+      </div>
+      <h2>Viewer status</h2>
+      <dl>
+        <dt>Connection</dt>
+        <dd id="status_connection">false</dd>
+        <dt>Mode</dt>
+        <dd id="status_mode">view</dd>
+        <dt>Annotation list</dt>
+        <dd id="status_annotation_list">empty</dd>
+        <dt>Visible annotations</dt>
+        <dd id="status_annotations_count">0</dd>
+      </dl>
+    </div>
+    <iframe src="https://clovid.uni-muenster.de/webclient/img_detail/152/?dataset=152" width="1600" height="800" frameborder="0"></iframe>
+  </div>
 </body>
+
+<style>
+  body {
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  }
+  .grid {
+    display: flex;
+    column-gap: 1em;
+  }
+  .grid-2 {
+    flex-basis: 20%;
+  }
+  .column {
+    flex-direction: column;
+  }
+  button {
+    max-width: 250px;
+  }
+  button + button {
+    margin-top: 5px;
+  }
+  dt {
+    font-weight: bold;
+  }
+</style>
 
 <script>
   let iViewerWindow;
@@ -47,6 +80,32 @@
           sendEvent('initialized');
           sendEvent('prepare');
           break;
+        case 'annotations_loaded':
+          if (omeroMessage.payload.shapes) {
+            updateAnnotationList(omeroMessage.payload.shapes);
+            sendAction('hide_all_annotations');
+          } else {
+            console.warn('Viewer claims that annotations are loaded, but there aren\'t any');
+          }
+          break;
+
+        case 'REGIONS_PROPERTY_CHANGED':
+          if (omeroMessage.params.properties[0] === 'visible') {
+            setAnnotationCount(getAnnotationCount() + omeroMessage.params.values.reduce((sum, bool) => bool ? sum + 1 : sum - 1, 0))
+          }
+          break;
+
+        case 'REGIONS_DRAW_SHAPE':
+          setStatusMode('draw');
+          break;
+
+        case 'REGIONS_STORE_SHAPES':
+          setStatusMode('store');
+          break;
+
+        case 'REGIONS_STORED_SHAPES':
+          setStatusMode('view');
+          break;
 
         default:
           console.log('iViewer event', {name: omeroMessage.name, params: omeroMessage.params})
@@ -55,17 +114,28 @@
     }
   })
 
-  document.querySelectorAll('.action-button').forEach(btn => btn.onclick = () => {
-    // todo fix in viewer to use action instead of event
-    const type = btn.classList.contains('event-fix') ? 'event' : 'action';
-    sendMessage(type, btn.dataset.action);
-  })
+  function initActionButtons() {
+    document.querySelectorAll('.action-button').forEach(btn => {
+      if (btn.classList.contains('initalized')) return;
+      btn.onclick = () => {
+        // todo fix in viewer to use action instead of event
+        const type = btn.classList.contains('event-fix') ? 'event' : 'action';
+        sendMessage(type, btn.dataset.action, btn.dataset.payload && JSON.parse(btn.dataset.payload));
+      }
+      btn.classList.add('initalized');
+    })
+  }
+  initActionButtons();
 
   function sendEvent(name) {
     sendMessage('event', name);
   }
 
-  function sendMessage(type, name) {
+  function sendAction(name) {
+    sendMessage('action', name);
+  }
+
+  function sendMessage(type, name, payload) {
     if (!iViewerWindow) {
       return;
     }
@@ -75,9 +145,38 @@
         target: iViewerId,
         type,
         name,
+        payload
       },
       targetOrigin
     );
+  }
+
+  function updateAnnotationList(shapes) {
+    const container = document.querySelector('#status_annotation_list');
+    const shapesHtml = `
+      <ul>
+        ${shapes.map(shapeId => `
+          <li>${shapeId}:
+            <button class="action-button" data-action="zoom_to_annotation" data-payload='{"annotationId": "${shapeId}"}'>Jump</button>
+            <button class="action-button" data-action="hide_annotations" data-payload='{"annotationIds": ["${shapeId}"]}'>Hide</button>
+            <button class="action-button" data-action="show_annotations" data-payload='{"annotationIds": ["${shapeId}"]}'>Show</button>
+          </li>
+        `)}
+      </ul>
+    `;
+    container.innerHTML = shapesHtml;
+    initActionButtons();
+    setAnnotationCount(shapes.length);
+  }
+
+  function setStatusMode(mode) {
+    document.querySelector('#status_mode').innerHTML = mode;
+  }
+  function setAnnotationCount(num) {
+    document.querySelector('#status_annotations_count').innerHTML = num;
+  }
+  function getAnnotationCount() {
+    return +document.querySelector('#status_annotations_count').innerHTML;
   }
 </script>
 </html>
