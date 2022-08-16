@@ -16,7 +16,9 @@
         <button class="action-button" data-action="hide_header_actions">Hide header actions</button>
         <button class="action-button" data-action="hide_all_annotations">Hide all annotations</button>
         <button class="action-button" data-action="show_all_annotations">Show all annotations</button>
-        <button class="action-button event-fix" data-action="newPoint">Create ROI</button>
+        <button class="action-button event-fix" data-action="newPoint" data-payload='{"shapeType": "fixed_arrow"}'>Create Fixed Arrow</button>
+        <button class="action-button event-fix" data-action="newPoint" data-payload='{"shapeType": "arrow"}'>Create Normal Arrow</button>
+        <button class="action-button event-fix" data-action="newPoint" data-payload='{"shapeType": "point"}'>Create Point</button>
         <button class="action-button event-fix" data-action="savePoint">Save ROI</button>
       </div>
       <h2>Viewer status</h2>
