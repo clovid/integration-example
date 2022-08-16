@@ -99,7 +99,7 @@
           break;
 
         case 'REGIONS_DRAW_SHAPE':
-          setStatusMode('draw');
+          setStatusMode(omeroMessage.params.abort ? 'view' : 'draw');
           break;
 
         case 'REGIONS_STORE_SHAPES':
