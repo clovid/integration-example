@@ -20,6 +20,8 @@
         <button class="action-button event-fix" data-action="newPoint" data-payload='{"shapeType": "arrow"}'>Create Normal Arrow</button>
         <button class="action-button event-fix" data-action="newPoint" data-payload='{"shapeType": "point"}'>Create Point</button>
         <button class="action-button event-fix" data-action="savePoint">Save ROI</button>
+        <button class="action-button" data-action="disable_interaction">Disable interactions</button>
+        <button class="action-button" data-action="enable_interaction">Enable interactions</button>
       </div>
       <h2>Viewer status</h2>
       <dl>
@@ -29,7 +31,7 @@
         <dd id="status_mode">view</dd>
         <dt>Annotation list</dt>
         <dd id="status_annotation_list">empty</dd>
-        <dt>Visible annotations</dt>
+        <dt>Visible annotations (WIP)</dt>
         <dd id="status_annotations_count">0</dd>
       </dl>
     </div>
@@ -59,6 +61,10 @@
   }
   dt {
     font-weight: bold;
+  }
+  ul {
+    margin: 0;
+    padding: 0;
   }
 </style>
 
@@ -95,6 +101,8 @@
         case 'REGIONS_PROPERTY_CHANGED':
           if (omeroMessage.params.properties[0] === 'visible') {
             setAnnotationCount(getAnnotationCount() + omeroMessage.params.values.reduce((sum, bool) => bool ? sum + 1 : sum - 1, 0))
+          } else {
+            console.log('iViewer event', {name: omeroMessage.name, params: omeroMessage.params})
           }
           break;
 
@@ -160,12 +168,16 @@
       <ul>
         ${shapes.map(shapeId => `
           <li>${shapeId}:
-            <button class="action-button" data-action="zoom_to_annotation" data-payload='{"annotationId": "${shapeId}"}'>Jump</button>
+            <button class="action-button" data-action="deselect_annotation" data-payload='{"annotationId": "${shapeId}"}'>Deselect</button>
+            <button class="action-button" data-action="pan_to_annotation" data-payload='{"annotationId": "${shapeId}", "select": true}'>Select</button>
+            <button class="action-button" data-action="zoom_to_annotation" data-payload='{"annotationId": "${shapeId}", "select": true}'>Zoom</button>
             <button class="action-button" data-action="hide_annotations" data-payload='{"annotationIds": ["${shapeId}"]}'>Hide</button>
             <button class="action-button" data-action="show_annotations" data-payload='{"annotationIds": ["${shapeId}"]}'>Show</button>
           </li>
-        `)}
+        `).join('')}
       </ul>
+      <hr/>
+      <button class="action-button" data-action="zoom_to_annotations" data-payload='{"annotationIds": ${JSON.stringify(shapes)}}'>Zoom to all annotations</button>
     `;
     container.innerHTML = shapesHtml;
     initActionButtons();
