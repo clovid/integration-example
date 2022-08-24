@@ -87,7 +87,9 @@
           iViewerWindow = event.source;
           iViewerId = omeroMessage.params.iviewerid;
           sendEvent('initialized');
-          sendEvent('prepare');
+          break;
+        case 'VIEWER_INITIALIZED':
+          sendAction('prepare');
           break;
         case 'annotations_loaded':
           if (omeroMessage.payload.shapes) {
