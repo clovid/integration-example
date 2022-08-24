@@ -16,10 +16,10 @@
         <button class="action-button" data-action="hide_header_actions">Hide header actions</button>
         <button class="action-button" data-action="hide_all_annotations">Hide all annotations</button>
         <button class="action-button" data-action="show_all_annotations">Show all annotations</button>
-        <button class="action-button event-fix" data-action="newPoint" data-payload='{"shapeType": "fixed_arrow"}'>Create Fixed Arrow</button>
-        <button class="action-button event-fix" data-action="newPoint" data-payload='{"shapeType": "arrow"}'>Create Normal Arrow</button>
-        <button class="action-button event-fix" data-action="newPoint" data-payload='{"shapeType": "point"}'>Create Point</button>
-        <button class="action-button event-fix" data-action="savePoint">Save ROI</button>
+        <button class="action-button" data-action="add_annotation" data-payload='{"shapeType": "fixed_arrow"}'>Create Fixed Arrow</button>
+        <button class="action-button" data-action="add_annotation" data-payload='{"shapeType": "arrow"}'>Create Normal Arrow</button>
+        <button class="action-button" data-action="add_annotation" data-payload='{"shapeType": "point"}'>Create Point</button>
+        <button class="action-button" data-action="save_annotation">Save ROI</button>
         <button class="action-button" data-action="disable_interaction">Disable interactions</button>
         <button class="action-button" data-action="enable_interaction">Enable interactions</button>
       </div>
@@ -131,9 +131,7 @@
     document.querySelectorAll('.action-button').forEach(btn => {
       if (btn.classList.contains('initalized')) return;
       btn.onclick = () => {
-        // todo fix in viewer to use action instead of event
-        const type = btn.classList.contains('event-fix') ? 'event' : 'action';
-        sendMessage(type, btn.dataset.action, btn.dataset.payload && JSON.parse(btn.dataset.payload));
+        sendMessage('action', btn.dataset.action, btn.dataset.payload && JSON.parse(btn.dataset.payload));
       }
       btn.classList.add('initalized');
     })
