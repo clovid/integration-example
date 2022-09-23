@@ -9,6 +9,7 @@ services:
     restart: unless-stopped
     environment:
       CONFIG_omero_db_pass: $OMERO_DB_PASSWORD
+      CONFIG_omero_sessions_timeout: 7200000 # 2h in ms
       ROOTPASS: $OMERO_ROOT_PASSWORD
   omeroweb:
     restart: unless-stopped
