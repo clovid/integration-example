@@ -60,3 +60,31 @@ alias omero='/opt/omero/server/OMERO.server/bin/omero'
 omero -s localhost -u root login
 omero obj new Dataset name=image_1
 omero import -d Dataset:[id] [image]
+
+### Misc
+
+#### Helpful omero server infos
+
+- https://docs.openmicroscopy.org/omero/5.6.3/sysadmins/server-performance.html
+- https://forum.image.sc/t/omero-pyramid-generation-time/33463/26
+
+omero admin diagnostics
+omero admin jvmcfg
+omero config get
+
+- cat PixelData-0.log | grep "Pyramid creation"
+
+#### Performance
+
+- https://docs.openmicroscopy.org/omero/5.3.5/sysadmins/unix/install-web/web-deployment.html
+- https://github.com/ome/prod-playbooks/blob/master/omero/ome-demoserver.yml
+- https://github.com/ome/prod-playbooks/tree/d604a0c9db28c83414bd6fb0c38362b9722cf1bf
+- https://medium.com/building-the-system/gunicorn-3-means-of-concurrency-efbb547674b7
+- https://docs.loadforge.com/docs/misc-nginx
+- https://www.digitalocean.com/community/tutorials/how-to-optimize-nginx-configuration
+- https://www.digitalocean.com/community/tutorials/how-to-set-up-nginx-with-http-2-support-on-ubuntu-20-04
+- https://stackoverflow.com/questions/36014554/how-to-change-the-default-location-for-docker-create-volume-command
+
+### Demo WSI images
+
+- https://downloads.openmicroscopy.org/images/
