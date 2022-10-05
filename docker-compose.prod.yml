@@ -10,11 +10,15 @@ services:
     environment:
       CONFIG_omero_db_pass: $OMERO_DB_PASSWORD
       CONFIG_omero_sessions_timeout: 7200000 # 2h in ms
+      CONFIG_omero_db_poolsize: 100
+      # CONFIG_omero_jvmcfg_percent_blitz: 60 # use 60% of memory for blitz server
       ROOTPASS: $OMERO_ROOT_PASSWORD
   omeroweb:
     restart: unless-stopped
     build: .
     image: custom-omero-web:prod
+    environment:
+      #CONFIG_web_wsgi__workers: 9 # (2 x NUM_CORES) + 1
     volumes:
       - ./config/02-additional-config.omero:/opt/omero/web/config/02-additional-config.omero:ro
     ports:
