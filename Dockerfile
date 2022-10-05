@@ -1,7 +1,7 @@
 FROM node:14 AS builder
 
 RUN apt-get update &&\
-  apt-get install -y openjdk-8-jdk &&\
+  apt-get install -y openjdk-11-jdk &&\
   apt install -y ant
 ADD https://api.github.com/repos/clovid/omero-iviewer/commits/main /latest-commit.json
 RUN git clone https://github.com/clovid/omero-iviewer.git &&\
