@@ -97,7 +97,6 @@
         case 'annotations_loaded':
           if (omeroMessage.payload.shapes) {
             updateAnnotationList(omeroMessage.payload.shapes);
-            sendAction('hide_all_annotations');
           } else {
             console.warn('Viewer claims that annotations are loaded, but there aren\'t any');
           }
