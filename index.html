@@ -37,7 +37,7 @@
         <dd id="status_annotations_count">0</dd>
       </dl>
     </div>
-    <iframe src="https://clovid.uni-muenster.de/webclient/img_detail/152/?dataset=152" width="1600" height="800" frameborder="0"></iframe>
+    <iframe src="https://omero.clovid.org/webclient/img_detail/152/?dataset=152&roi_hidden_on_init=true" width="1600" height="800" frameborder="0"></iframe>
   </div>
 </body>
 
@@ -91,6 +91,7 @@
           sendEvent('initialized');
           break;
         case 'VIEWER_INITIALIZED':
+          console.log('VIEWER_INITIALIZED', event);
           sendAction('prepare');
           break;
         case 'annotations_loaded':
