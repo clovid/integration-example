@@ -96,6 +96,9 @@
           console.log('VIEWER_INITIALIZED', event);
           sendAction('prepare');
           break;
+        case 'regions_created':
+          sendAction('enable_comments');
+          break;
         case 'annotations_loaded':
           if (omeroMessage.payload.shapes) {
             updateAnnotationList(omeroMessage.payload.shapes);
