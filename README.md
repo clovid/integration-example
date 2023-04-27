@@ -67,6 +67,11 @@ omero import -d Dataset:[id] [image]
 
 ### Misc
 
+#### Using omero-cli-transfer
+
+To use the helpful tool https://github.com/ome/omero-cli-transfer we can use our adapted dockerized version: https://github.com/clovid/docker-omero-cli-transfer. For this we only have to expose the server port `4064` in the `docker-compose.prod.yml` file.
+
+
 #### Helpful omero server infos
 
 - https://docs.openmicroscopy.org/omero/5.6.3/sysadmins/server-performance.html
@@ -117,16 +122,17 @@ All following requests are using a session cookie for authentication per default
 The default behavior of modern browsers is to deny cookies that are set by a 3rd party. That means in our case, if we integrate Omero via an iframe it is considered as a 3rd party and the browser doesn't allow the cookie setting therefore the session cookie is not set and the following request respond with an authentication error.
 
 We now have different options to make this work:
-a) Enable 3rd party cookies in the browser
+
+- a) Enable 3rd party cookies in the browser
   - no implementation needed
   - doesn't work per default -> users have to change settings
-b) Add the "bsession" parameter to each of the following requests
+- b) Add the "bsession" parameter to each of the following requests
   - implementation in iviewer needed
   - increased loading time for every request because Omero creates an internal session when getting a "bsession" parameter and doing that for every request (and not just the initial page) increased the server load
   - would work per default -> users don't have to change settings
-c) Use a subdomain of the domain that implements the iframe to Omero iViewer and which proxies the requests to the Omero instance (for example: vquest.eu contains iframe to omero.vquest.eu which is a proxy to omero.clovid.org)
+- c) Use a subdomain of the domain that implements the iframe to Omero iViewer and which proxies the requests to the Omero instance (for example: vquest.eu contains iframe to omero.vquest.eu which is a proxy to omero.clovid.org)
   - only minor changes necessary
     - subdomain with CNAME DNS entry or ngxin `proxy_pass` (if we don't have an access to the DNS table)
     - new SSL certificate
   - would work per default
-  - Additional upside: Fullscreen in Chrome seems to work better, if iframe and webpage have the same domain
+  - Additional upside: Fullscreen in Chrome seems to work better, if iframe and webpage have the same domain.
