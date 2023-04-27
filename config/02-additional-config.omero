@@ -1,20 +1,2 @@
 # Allow embedding in iframe
 config remove -- omero.web.middleware '{"index": 6, "class": "django.middleware.clickjacking.XFrameOptionsMiddleware"}'
-#config remove -- omero.web.middleware '{"index": 4, "class": "django.middleware.csrf.CsrfViewMiddleware"}'
-
-# Allow cookies in iframe
-config set -- omero.web.session_cookie_secure 'true'
-config set -- omero.web.csrf_cookie_secure 'true'
-config append -- omero.web.django_additional_settings '["SESSION_COOKIE_SAMESITE", "None"]'
-config append -- omero.web.django_additional_settings '["CSRF_COOKIE_SAMESITE", "None"]'
-
-# Allow API requests
-config append -- omero.web.apps '"corsheaders"'
-config append -- omero.web.middleware '{"index": 0.3, "class": "corsheaders.middleware.CorsMiddleware"}'
-config append -- omero.web.middleware '{"index": 10, "class": "corsheaders.middleware.CorsPostCsrfMiddleware"}'
-
-# Only for testing
-# config set -- omero.web.debug True
-
-# Custom viewer
-config append omero.web.apps '"omero_iviewer_clovid"'
