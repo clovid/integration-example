@@ -34,7 +34,6 @@ services:
     image: "openmicroscopy/omero-web-standalone:5"
     environment:
       OMEROHOST: omeroserver
-      CONFIG_omero_web_cors__origin__whitelist: $OMERO_CORS_WHITELIST
     networks:
       - omero
 
