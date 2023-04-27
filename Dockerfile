@@ -11,6 +11,5 @@ RUN git clone --branch custom-name https://github.com/clovid/omero-iviewer.git &
 
 FROM openmicroscopy/omero-web-standalone:5
 USER root
-RUN /opt/omero/web/venv3/bin/pip install 'django-cookies-samesite'
 COPY --from=builder /omero-iviewer/plugin/omero_iviewer /opt/omero/web/venv3/lib/python3.6/site-packages/omero_iviewer_clovid
 USER omero-web
