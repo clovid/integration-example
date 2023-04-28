@@ -1,2 +1,7 @@
 # Allow embedding in iframe
 config remove -- omero.web.middleware '{"index": 6, "class": "django.middleware.clickjacking.XFrameOptionsMiddleware"}'
+
+config append -- omero.web.apps '"omero_iviewer_clovid"'
+
+# Only for testing
+# config set -- omero.web.debug True
