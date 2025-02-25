@@ -18,8 +18,9 @@ services:
     restart: unless-stopped
     build: .
     image: custom-omero-web:prod
-    #environment:
+    environment:
       #CONFIG_web_wsgi__workers: 5 # (2 x NUM_CORES) + 1
+      CONFIG_omero_web_csrf__trusted__origins: $OMERO_TRUSTED_ORIGINS
     volumes:
       - ./config/02-additional-config.omero:/opt/omero/web/config/02-additional-config.omero:ro
     ports:
